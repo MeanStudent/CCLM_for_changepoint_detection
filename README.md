@@ -67,7 +67,7 @@ parser.add_argument("-msd", "--model_save_dir",  default = '/mnt/swordfish-pool2
 parser.add_argument("-rsd", "--result_save_dir", default = '/mnt/swordfish-pool2/kh3074/neg_pos_rate2/evaluate_results')
 ```
 
-A sample for you to use three listed .py code:
+A sample of using three listed .py code:
 ```
 python3 train_cls_head.py -dsp path/to/pkl/dataset -tbs 1024 -ebs 2048 -ne 100 -lr 0.0002 -uc 1 -tn whisper -gpu 1,2,3,4 -npr 1 - msd path/to/save/top3/models -rsd path/to/save/epoch/result
 
