@@ -19,7 +19,7 @@ pip3 install -r requirements.txt
 ```
 
 ### Description of Codes
-- `trainb_cls_head.py` -> Load pretrained CCLM encoder and train cls head for changepoint detection.(Pretrained CCLM encoder are freezed at this step.)
+- `train_cls_head.py` -> Load pretrained CCLM encoder and train cls head for changepoint detection.(Pretrained CCLM encoder are freezed at this step.)
 - `fine_tune.py` -> Finetune the whole model including the pretrained CCLM encoder.
 - `inference.py` -> Make predictions on validation dataset.
 
@@ -29,10 +29,9 @@ The dataset is saved in a dictionary and only includes paths to specific files. 
 Sepecifically, you can use Amith's saved cache: `/mnt/swordfish-pool2/ccu/amith-cache.pkl`
 Alternatively, you can refer to [Amith's data loader function](https://github.com/amith-ananthram/columbia-ccu/tree/main/loaders) to create your own cached dataset.
 
-## 3. Generating candidates
+## 3. Argument Description.
 
-Arguments in codes.
-```
+```python
 # origin data dict created by loader function
 parser.add_argument("-dsp", "--dataset_path", default = '/mnt/swordfish-pool2/ccu/amith-cache.pkl')
 
@@ -66,6 +65,15 @@ parser.add_argument("-msd", "--model_save_dir",  default = '/mnt/swordfish-pool2
 
 # training loss and results in every epoch are saved to this path
 parser.add_argument("-rsd", "--result_save_dir", default = '/mnt/swordfish-pool2/kh3074/neg_pos_rate2/evaluate_results')
+```
+
+A sample for you to use three listed py code:
+```
+python3 train_cls_head.py -dsp path/to/pkl/dataset -tbs 1024 -ebs 2048 -ne 100 -lr 0.0002 -uc 1 -tn whisper -gpu 1,2,3,4 -npr 1 - msd path/to/save/top3/models -rsd path/to/save/epoch/result
+
+python3 fine_tune.py -dsp path/to/pkl/dataset -tbs 256 -ebs 2048 -ne 20 -lr 0.0001 -uc 1 -tn whisper -gpu 1,2,3,4 -npr 1 - msd path/to/save/top3/models -rsd path/to/save/epoch/result
+
+python3 inference.py -dn INTERNAL_VAL -dsp path/to/pkl/dataset -bs 2048 -gpu 1,2,3,4 -uc 1 -part 2 -msp path/to/your/trained/model -rsd path/to/save/predicted/results
 ```
 
 ## 4. Notebooks
