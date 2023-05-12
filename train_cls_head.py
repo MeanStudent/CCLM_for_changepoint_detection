@@ -34,7 +34,7 @@ if __name__ == '__main__':
     parser.add_argument("-ebs", "--eval_batch_size", type = int, required=True)
     parser.add_argument("-ne", "--num_epochs", type = int, default = 100)
     parser.add_argument("-lr", "--lr", type = float, default = 0.0002)
-    parser.add_argument("-uc", "--use_context", type = bool, default = True)
+    parser.add_argument("-uc", "--use_context", type = int, default = 1)
     parser.add_argument("-tn", "--transcribe_name", type = str, default = 'whisper')
     parser.add_argument("-gpu", "--gpu_index", required=True)
     parser.add_argument("-npr", "--neg_pos_rate", type=float, required= True)
