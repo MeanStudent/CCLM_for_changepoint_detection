@@ -1,18 +1,16 @@
 # CCLM for change point detection
 
 ## Overview
-This repo is a replica of [SimCLS](https://arxiv.org/abs/2106.01890v1) for abstract text summarization. Unlike the original source code, we add some code for generating summary candidates and simplifying the training process. And we also tried this framework with different architecture including deBerta and Bert as scorers for our covid paper titling task.
-
-Lacking of computational power, the generative model we use is a [T5_small ](https://huggingface.co/t5-small) finetuned on our dataset.
+This repo is an experiment from Columbia CCU that uses a pretrained [CCLM model](https://arxiv.org/abs/2206.00621) to detect changepoints in conversations using both visual and textual input.
 
 
 ## 1. How to Install
 
 ### Requirements
-- `python3`
-- `conda create --name env --file spec-file.txt`
-- `pip3 install -r requirements.txt`
-- `compare_mt` -> https://github.com/neulab/compare-mt
+- Install python3 environment.
+```python 
+pip3 install -r requirements.txt
+```
 
 ### Description of Codes
 - `main.py` -> training scorer model
