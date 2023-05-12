@@ -2,6 +2,7 @@
 
 ## Overview
 This repo is an experiment from Columbia CCU that uses a pretrained [CCLM model](https://arxiv.org/abs/2206.00621) to detect changepoints in conversations using both visual and textual input.
+[](img/1.png)
 
 
 ## 1. How to Install
