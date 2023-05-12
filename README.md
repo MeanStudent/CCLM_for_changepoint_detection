@@ -11,64 +11,68 @@ This repo is an experiment from Columbia CCU that uses a pretrained [CCLM model]
 ```python 
 pip3 install -r requirements.txt
 ```
+- Install pretrained CCLM checkpoint form [initial CCLM repo](https://github.com/zengyan-97/CCLM) and save the wights into following path. (CCLM-4M is mainly used in this experiment)
+```
+\data\cclm_4m_epoch_29.th
+```
 
 ### Description of Codes
-- `main.py` -> training scorer model
-- `model.py` -> models
-- `data_utils.py` -> dataloader
-- `utils.py` -> utility functions
-- `preprocess.py` -> data preprocessing
-- `generat_cand.py` -> generate candidate summaries for training
-- `finetune_model.py` -> finetune your own generative model
-- `evaluate_model.py` -> evalualte model with trained scorer
+- `trainb_cls_head.py` -> Load pretrained CCLM encoder and train cls head for changepoint detection.(Pretrained CCLM encoder are freezed at this step.)
+- `fine_tune.py` -> Finetune the whole model including the pretrained CCLM encoder.
+- `inference.py` -> Make predictions on validation dataset.
 
-### Workspace
-Following directories should be created for our experiments.
-- `./cache` -> storing model checkpoints
+
 ## 2. Dataset
-Need to know that the dataset in this repo [clean_covid.csv](clean_covid.csv) is just a sample dataset only contain 10000 records, if you want to access to the full data, please refer to the following link.
-
-- [The COVID-19 Open Research Dataset.](https://learn.microsoft.com/en-us/azure/open-datasets/dataset-covid-19-open-research?tabs=azure-storage)
+The dataset is saved in a dictionary and only includes paths to specific files. In order to load the required data, you need to connect to CU machines.
+Sepecifically, you can use Amith's saved cache: `/mnt/swordfish-pool2/ccu/amith-cache.pkl`
+Alternatively, you can refer to [Amith's data loader function](https://github.com/amith-ananthram/columbia-ccu/tree/main/loaders) to create your own cached dataset.
 
 ## 3. Generating candidates
 
-To generate candidates please run:
+Arguments in codes.
 ```
-!python gen_candidate.py --generator_name {args.generator_name} --dataset_name {args.dataset_name} --dataset_percent {args.dataset_percent} --num_cands {args.num_cands}
-```
-**generator_name**: is the path to previously finetuned generator. Here in our case we use a T5_small model finetuned on CORD dataset.  
-**dataset_name**: is the path to dataset. (need to be a csv file, and column name for source document should be **abstract**, column name for reference summary should be **title**). 
-**dataset_percent**: percent of data are used to generate, for test you can use smal percent of dataset to debug. Default to 100.  
-**num_cands**: Num of candidates you want to generate.  
+# origin data dict created by loader function
+parser.add_argument("-dsp", "--dataset_path", default = '/mnt/swordfish-pool2/ccu/amith-cache.pkl')
 
-Generated candidate are stored in the forder 'candidates/{args.generator_name}_{args.num_cands}'.  
+# train batchsize
+parser.add_argument("-tbs", "--train_batch_size", type = int, default = 50)
 
-For data preprocessing, please run
-```
-python preprocess.py --src_dir [path of the raw data] --tgt_dir [output path] --split [train/val/test] --cand_num [number of candidate summaries]
-```
-`src_dir` is the candidate folder: 'candidates/{args.generator_name}_{args.num_cands}'.
+# evaluation batchsize (calculate accuracy and recall at the end of each epoch)
+parser.add_argument("-ebs", "--eval_batch_size", type = int, default = 512)
 
-The preprocessing precedure will store the processed data as seperate json files in `tgt_dir`.
+parser.add_argument("-ne", "--num_epochs", type = int, default = 20)
 
-## 4. scorer training
+# 0 = not use context, 1 = use context 
+parser.add_argument("-uc", "--use_context", type = int, default = 1)
 
-### Hyper-parameter Setting
-You may specify the hyper-parameters in `main.py`.
+parser.add_argument("-lr", "--lr", type = float, default = 0.00002)
 
-### Train
-```
-python main.py --cuda --gpuid [list of gpuid] -l
-```
-### Fine-tune
-```
-python main.py --cuda --gpuid [list of gpuid] -l --model_pt [model path]
-```
-model path should be a subdirectory in the `./cache` directory, e.g. `cnndm/model.pt` (it shouldn't contain the prefix `./cache/`).
+# only load utterance transcribed by specific model. pick one form ['whisper','wav2vec','azure']
+parser.add_argument("-tn", "--transcribe_name", type = str, default = 'whisper')
 
-### Evaluate
-```
-python evaluate_model.py --generator_name {args.generator_name} --dataset_name {args.dataset_name} --scorer_path cache/22-12-17-0/scorer.bin --dataset_percent 10
+# GPU you want to use, input string like '1,2,4' (using 3 GPUs)
+parser.add_argument("-gpu", "--gpu_index", required=True)
+
+# Down sample ratio you are using when constructing a training dataset
+parser.add_argument("-npr", "--neg_pos_rate", type=float, required= True)
+
+# if you are finetuing input your trained CCLM model with cls head.
+parser.add_argument("-tchm", "--trained_cls_head_model", type = str, default = '/mnt/swordfish-pool2/kh3074/neg_pos_rate2/trained_cls_head_model/model_tuned_epoch_44')
+
+# top 3 models with highest pr-auc are saved to this path
+parser.add_argument("-msd", "--model_save_dir",  default = '/mnt/swordfish-pool2/kh3074/neg_pos_rate2/saved_models')
+
+# training loss and results in every epoch are saved to this path
+parser.add_argument("-rsd", "--result_save_dir", default = '/mnt/swordfish-pool2/kh3074/neg_pos_rate2/evaluate_results')
 ```
 
-## 5. Results
+## 4. Notebooks
+Check out the notebooks if you want! They'll show you through our data loading and training loops.
+
+## 5. Current results
+[]
+[]
+[]
+[]
+[]
+[]
