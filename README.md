@@ -1,7 +1,8 @@
 # CCLM for change point detection
 
 ## Overview
-This repo is an experiment from Columbia CCU that uses a pretrained [CCLM model](https://arxiv.org/abs/2206.00621) to detect changepoints in conversations using both visual and textual input.
+This repo is an experiment from Columbia CCU that uses a pretrained [CCLM model](https://arxiv.org/abs/2206.00621) to detect changepoints in conversations using both visual and textual input.  
+
 ![CCLM for changepoint detection](img/1.png)
 
 
@@ -70,6 +71,8 @@ parser.add_argument("-rsd", "--result_save_dir", default = '/mnt/swordfish-pool2
 ## 4. Notebooks
 Check out the notebooks if you want! They'll show you through our data loading and training loops.
 
-## 5. Current results
-![result on val dataset](img/2.png)
+## 5. Current results. 
+
+![result on val dataset](img/2.png)  
+
 ![result on test dataset](img/3.png)
